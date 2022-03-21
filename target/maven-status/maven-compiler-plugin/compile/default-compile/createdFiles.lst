@@ -1,0 +1,8 @@
+Main.class
+app/controller/Controller.class
+app/model/Strokes.class
+app/model/Player.class
+client/Client.class
+app/model/Game.class
+client/Constants.class
+app/view/View.class
