@@ -26,6 +26,13 @@ public class Main {
                     else
                         System.out.println("Aucun joueur avec ce username n'a été trouvé");
                     break;
+                case Constants.VIEW_THE_5_MOST_PLAYED_OPENING:
+                    ArrayList<String> openingList = Controller.makeRequestForCriteria3(serverIpAddress, serverPort);
+                    if(openingList != null)
+                        displayOpenings(openingList);
+                    else
+                        System.out.println("There was an issue");
+                    break;
             }
         }
     }
@@ -47,6 +54,13 @@ public class Main {
         for(Game game : gameList) {
             System.out.println(game);
             System.out.println("-----------------------------------------------------------------------");
+        }
+    }
+
+
+    static void displayOpenings(ArrayList<String> openingList) {
+        for(String opening : openingList) {
+            System.out.println(opening);
         }
     }
 }

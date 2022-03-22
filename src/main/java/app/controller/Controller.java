@@ -13,6 +13,7 @@ public class Controller {
 
     /**
      * Establish a connection with the server
+     * ask for a username
      * Make a request to find all games that a player played
      * Close the connection
      * @return list of the games
@@ -22,7 +23,7 @@ public class Controller {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Please type the username of the player");
             System.out.print("> ");
-            String username = scanner.nextLine();
+            String username = scanner.nextLine().trim(); // remove spaces around
 
             // opening the connection
             Socket connexionSocket = new Socket(serverIpAddress, serverPort);
@@ -46,7 +47,39 @@ public class Controller {
         } catch (UnknownHostException uhe) {
             System.out.println("Could not establish a connection with server. Let's try again");
         } catch (IOException ioe) {
+            System.out.println("Could not establish a connection with server. Let's try again");
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        }
 
+        return null;
+    }
+
+
+    public static ArrayList<String> makeRequestForCriteria3(String serverIpAddress, int serverPort) {
+        try {
+            // opening the connection
+            Socket connexionSocket = new Socket(serverIpAddress, serverPort);
+            PrintWriter outStream = new PrintWriter(new BufferedWriter(new OutputStreamWriter(connexionSocket.getOutputStream())), true);
+            ObjectInputStream inStream = new ObjectInputStream(connexionSocket.getInputStream());
+
+            // sending request
+            String request = Constants.VIEW_A_PLAYER_S_GAMES + "";
+            outStream.println(request);
+
+            ArrayList<String> openingList = (ArrayList<String>) inStream.readObject();
+
+            // closing the connection
+            outStream.close();
+            inStream.close();
+            connexionSocket.close();
+
+            return openingList;
+
+        } catch (UnknownHostException uhe) {
+            System.out.println("Could not establish a connection with server. Let's try again");
+        } catch (IOException ioe) {
+            System.out.println("Could not establish a connection with server. Let's try again");
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         }
