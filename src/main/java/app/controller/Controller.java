@@ -1,6 +1,7 @@
 package app.controller;
 
 import app.model.Game;
+import app.model.Request;
 import client.Constants;
 
 import java.io.*;
@@ -27,12 +28,14 @@ public class Controller {
 
             // opening the connection
             Socket connexionSocket = new Socket(serverIpAddress, serverPort);
-            PrintWriter outStream = new PrintWriter(new BufferedWriter(new OutputStreamWriter(connexionSocket.getOutputStream())), true);
+            ObjectOutputStream outStream = new ObjectOutputStream(connexionSocket.getOutputStream());
             ObjectInputStream inStream = new ObjectInputStream(connexionSocket.getInputStream());
 
             // sending request
-            String request = Constants.VIEW_A_PLAYER_S_GAMES + " " + username;
-            outStream.println(request);
+            ArrayList<String> criterias = new ArrayList<>();
+            criterias.add(username);
+            Request request = new Request(Request.VIEW_A_PLAYER_S_GAMES, criterias);
+            outStream.writeObject(request);
 
             // getting the answer from the server
             ArrayList<Game> gameList = (ArrayList<Game>) inStream.readObject();
@@ -60,12 +63,12 @@ public class Controller {
         try {
             // opening the connection
             Socket connexionSocket = new Socket(serverIpAddress, serverPort);
-            PrintWriter outStream = new PrintWriter(new BufferedWriter(new OutputStreamWriter(connexionSocket.getOutputStream())), true);
+            ObjectOutputStream outStream = new ObjectOutputStream(connexionSocket.getOutputStream());
             ObjectInputStream inStream = new ObjectInputStream(connexionSocket.getInputStream());
 
             // sending request
-            String request = Constants.VIEW_A_PLAYER_S_GAMES + "";
-            outStream.println(request);
+            Request request = new Request(Request.VIEW_THE_5_MOST_PLAYED_OPENING);
+            outStream.writeObject(request);
 
             ArrayList<String> openingList = (ArrayList<String>) inStream.readObject();
 
