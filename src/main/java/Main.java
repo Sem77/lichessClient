@@ -1,5 +1,6 @@
 import app.controller.Controller;
 import app.model.Game;
+import app.model.Request;
 import client.Constants;
 
 import java.util.ArrayList;
@@ -18,21 +19,29 @@ public class Main {
             System.out.print(">");
             int choice = scanner.nextInt();
 
-            switch (choice) {
-                case Constants.VIEW_A_PLAYER_S_GAMES:
-                    ArrayList<Game> gameList = Controller.makeRequestForCriteria2(serverIpAddress, serverPort);
-                    if (gameList != null)
-                        displayGameList(gameList);
-                    else
-                        System.out.println("Aucun joueur avec ce username n'a été trouvé");
-                    break;
-                case Constants.VIEW_THE_5_MOST_PLAYED_OPENING:
-                    ArrayList<String> openingList = Controller.makeRequestForCriteria3(serverIpAddress, serverPort);
-                    if(openingList != null)
-                        displayOpenings(openingList);
-                    else
-                        System.out.println("There was an issue");
-                    break;
+            if(choice == Request.VIEW_A_PLAYER_S_GAMES) {
+                ArrayList<Game> gameList = Controller.makeRequestForCriteria2(serverIpAddress, serverPort);
+                if (gameList != null)
+                    displayGameList(gameList);
+                else
+                    System.out.println("Aucun joueur avec ce username n'a été trouvé");
+            }
+            else if (choice == Request.VIEW_THE_5_MOST_PLAYED_OPENING) {
+                ArrayList<String> openingList = Controller.makeRequestForCriteria3(serverIpAddress, serverPort);
+                displayOpenings(openingList);
+            }
+            else if(choice == Request.VIEW_THE_SHORTEST_GAMES) {
+                ArrayList<Game> gameList = Controller.makeRequestForCriteria4(serverIpAddress, serverPort);
+                if(gameList != null)
+                    displayGameList(gameList);
+                else
+                    System.out.println("There was an issue");
+            }
+            else if(choice == Request.VIEW_THE_MOST_ACTIVE_PLAYERS) {
+
+            }
+            else if(choice == Request.VIEW_THE_BEST_PLAYERS) {
+
             }
         }
     }

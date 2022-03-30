@@ -89,4 +89,35 @@ public class Controller {
 
         return null;
     }
+
+    public static ArrayList<Game> makeRequestForCriteria4(String serverIpAddress, int serverPort) {
+        try {
+            // opening the connection
+            Socket connexionSocket = new Socket(serverIpAddress, serverPort);
+            ObjectOutputStream outStream = new ObjectOutputStream(connexionSocket.getOutputStream());
+            ObjectInputStream inStream = new ObjectInputStream(connexionSocket.getInputStream());
+
+            // sending request
+            Request request = new Request(Request.VIEW_THE_SHORTEST_GAMES);
+            outStream.writeObject(request);
+
+            ArrayList<Game> gameList = (ArrayList<Game>) inStream.readObject();
+
+            // closing the connection
+            outStream.close();
+            inStream.close();
+            connexionSocket.close();
+
+            return gameList;
+
+        }catch (UnknownHostException uhe) {
+            System.out.println("Could not establish a connection with server. Let's try again");
+        } catch (IOException ioe) {
+            System.out.println("Could not establish a connection with server. Let's try again");
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        }
+        return null;
+    }
+
 }
