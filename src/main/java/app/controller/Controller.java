@@ -22,7 +22,7 @@ public class Controller {
     public static ArrayList<Game> makeRequestForCriteria2(String serverIpAddress, int serverPort) {
         try {
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Please type the username of the player");
+            System.out.println("Veuillez saisir le nom du joueur");
             System.out.print("> ");
             String username = scanner.nextLine().trim(); // remove spaces around
 
@@ -120,4 +120,7 @@ public class Controller {
         return null;
     }
 
+    /*public static ArrayList<Game> makeRequestForCriteria5(String serverIpAddress, int serverPort) {
+
+    }*/
 }
