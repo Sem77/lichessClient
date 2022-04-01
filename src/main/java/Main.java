@@ -28,7 +28,7 @@ public class Main {
             }
             else if (choice == Request.VIEW_THE_5_MOST_PLAYED_OPENING) {
                 ArrayList<String> openingList = Controller.makeRequestForCriteria3(serverIpAddress, serverPort);
-                displayOpenings(openingList);
+                displayStrings(openingList);
             }
             else if(choice == Request.VIEW_THE_SHORTEST_GAMES) {
                 ArrayList<Game> gameList = Controller.makeRequestForCriteria4(serverIpAddress, serverPort);
@@ -38,7 +38,8 @@ public class Main {
                     System.out.println("There was an issue");
             }
             else if(choice == Request.VIEW_THE_MOST_ACTIVE_PLAYERS) {
-
+                ArrayList<String> playerList = Controller.makeRequestForCriteria5(serverIpAddress, serverPort);
+                displayStrings(playerList);
             }
             else if(choice == Request.VIEW_THE_BEST_PLAYERS) {
 
@@ -67,7 +68,7 @@ public class Main {
     }
 
 
-    static void displayOpenings(ArrayList<String> openingList) {
+    static void displayStrings(ArrayList<String> openingList) {
         for(String opening : openingList) {
             System.out.println(opening);
         }

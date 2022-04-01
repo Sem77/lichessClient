@@ -120,7 +120,42 @@ public class Controller {
         return null;
     }
 
-    /*public static ArrayList<Game> makeRequestForCriteria5(String serverIpAddress, int serverPort) {
+    public static ArrayList<String> makeRequestForCriteria5(String serverIpAddress, int serverPort) {
+        Scanner scanner = new Scanner(System.in);
 
-    }*/
+        System.out.println("How many players?");
+        String nbPlayers = scanner.nextLine();
+
+        try {
+            // opening the connection
+            Socket connexionSocket = new Socket(serverIpAddress, serverPort);
+            ObjectOutputStream outStream = new ObjectOutputStream(connexionSocket.getOutputStream());
+            ObjectInputStream inStream = new ObjectInputStream(connexionSocket.getInputStream());
+
+            // sending request
+            ArrayList<String> criterias = new ArrayList<>();
+            criterias.add(nbPlayers);
+            Request request = new Request(Request.VIEW_THE_MOST_ACTIVE_PLAYERS, criterias);
+            outStream.writeObject(request);
+
+            // getting the answer from the server
+            ArrayList<String> playerList = (ArrayList<String>) inStream.readObject();
+
+            // closing the connection
+            outStream.close();
+            inStream.close();
+            connexionSocket.close();
+
+            return playerList;
+
+        } catch (UnknownHostException uhe) {
+            System.out.println("Could not establish a connection with server. Let's try again");
+        } catch (IOException ioe) {
+            System.out.println("Could not establish a connection with server. Let's try again");
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        }
+
+        return null;
+    }
 }
