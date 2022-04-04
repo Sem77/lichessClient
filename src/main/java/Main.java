@@ -1,5 +1,6 @@
 import app.controller.Controller;
 import app.model.Game;
+import app.model.Player;
 import app.model.Request;
 import client.Constants;
 
@@ -40,9 +41,11 @@ public class Main {
             else if(choice == Request.VIEW_THE_MOST_ACTIVE_PLAYERS) {
                 ArrayList<String> playerList = Controller.makeRequestForCriteria5(serverIpAddress, serverPort);
                 displayStrings(playerList);
+                System.out.println(playerList.size());
             }
             else if(choice == Request.VIEW_THE_BEST_PLAYERS) {
-
+                ArrayList<Player> playerList = Controller.makeRequestForCiteria6(serverIpAddress, serverPort);
+                displayPlayers(playerList);
             }
         }
     }
@@ -54,9 +57,9 @@ public class Main {
         System.out.println("3- Voir les 5 ouvertures les plus jouées");
         System.out.println("4- Trouver les parties les plus courtes");
         System.out.println("5- Lister les joueurs les plus actifs");
-        System.out.println("7- Voir le joueur le plus fort selon l'algorithme PAGE RANK");
-        System.out.println("8- Voir le joueur le plus fort selon l'algorithme HITS");
-        System.out.println("9- Voir le plus grand nombre de coups consécutifs cc qui soient communs à p parties");
+        System.out.println("6- Voir le joueur le plus fort selon l'algorithme PAGE RANK");
+        System.out.println("7- Voir le joueur le plus fort selon l'algorithme HITS");
+        System.out.println("8- Voir le plus grand nombre de coups consécutifs cc qui soient communs à p parties");
     }
 
 
@@ -71,6 +74,18 @@ public class Main {
     static void displayStrings(ArrayList<String> openingList) {
         for(String opening : openingList) {
             System.out.println(opening);
+        }
+    }
+
+
+    static void displayPlayers(ArrayList<Player> playerList) {
+        int rank = 1;
+        for(Player player : playerList) {
+            System.out.println("Rang: " + rank);
+            System.out.println("Nom d'utilisateur: " + player.getUsername());
+            System.out.println("Page rank: " + player.getPageRank());
+            System.out.println("-------------------------------------------");
+            rank++;
         }
     }
 }

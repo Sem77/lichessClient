@@ -1,6 +1,7 @@
 package app.controller;
 
 import app.model.Game;
+import app.model.Player;
 import app.model.Request;
 import client.Constants;
 
@@ -59,6 +60,13 @@ public class Controller {
     }
 
 
+    /**
+     * Établie une connexion avec le serveur
+     * Demande les 5 ouvertures les plus jouées
+     * @param serverIpAddress
+     * @param serverPort
+     * @return
+     */
     public static ArrayList<String> makeRequestForCriteria3(String serverIpAddress, int serverPort) {
         try {
             // opening the connection
@@ -90,6 +98,13 @@ public class Controller {
         return null;
     }
 
+
+    /**
+     * Demandes les parties les plus courtes
+     * @param serverIpAddress
+     * @param serverPort
+     * @return
+     */
     public static ArrayList<Game> makeRequestForCriteria4(String serverIpAddress, int serverPort) {
         try {
             // opening the connection
@@ -120,10 +135,17 @@ public class Controller {
         return null;
     }
 
+
+    /**
+     * Demande les N joueurs les plus actifs
+     * @param serverIpAddress
+     * @param serverPort
+     * @return
+     */
     public static ArrayList<String> makeRequestForCriteria5(String serverIpAddress, int serverPort) {
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("How many players?");
+        System.out.println("Combien de joueurs?");
         String nbPlayers = scanner.nextLine();
 
         try {
@@ -156,6 +178,45 @@ public class Controller {
             cnfe.printStackTrace();
         }
 
+        return null;
+    }
+
+
+    public static ArrayList<Player> makeRequestForCiteria6(String serverIpAddress, int serverPort) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Combien de joueurs?");
+        String nbPlayers = scanner.nextLine();
+
+        try {
+            // opening the connection
+            Socket connexionSocket = new Socket(serverIpAddress, serverPort);
+            ObjectOutputStream outStream = new ObjectOutputStream(connexionSocket.getOutputStream());
+            ObjectInputStream inStream = new ObjectInputStream(connexionSocket.getInputStream());
+
+            // sending request
+            ArrayList<String> criterias = new ArrayList<>();
+            criterias.add(nbPlayers);
+            Request request = new Request(Request.VIEW_THE_BEST_PLAYERS, criterias);
+            outStream.writeObject(request);
+
+            // getting the answer from the server
+            ArrayList<Player> playerList = (ArrayList<Player>) inStream.readObject();
+
+            // closing the connection
+            outStream.close();
+            inStream.close();
+            connexionSocket.close();
+
+            return playerList;
+
+        } catch (UnknownHostException uhe) {
+            System.out.println("Could not establish a connection with server. Let's try again");
+        } catch (IOException ioe) {
+            System.out.println("Could not establish a connection with server. Let's try again");
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        }
         return null;
     }
 }
