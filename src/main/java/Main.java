@@ -2,7 +2,7 @@ import app.controller.Controller;
 import app.model.Game;
 import app.model.Player;
 import app.model.Request;
-import client.Constants;
+import app.model.Strokes;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -15,17 +15,27 @@ public class Main {
     public static void main(String args[]) {
         Scanner scanner = new Scanner(System.in);
 
-        while(true) {
-            displayMenu();
-            System.out.print(">");
-            int choice = scanner.nextInt();
+        displayMenu();
+        System.out.print(">");
+        int choice = scanner.nextInt();
 
-            if(choice == Request.VIEW_A_PLAYER_S_GAMES) {
+        while(choice != 0) {
+
+            if(choice == Request.VIEW_A_GAME) {
+                Strokes strokes = Controller.makeRequestForCriteia1(serverIpAddress, serverPort);
+                if(strokes != null) {
+                    strokes.showSteps();
+                }
+                else {
+                    System.out.println("Aucune partie avec ce lien c'a été trouvée");
+                }
+            }
+            else if(choice == Request.VIEW_A_PLAYER_S_GAMES) {
                 ArrayList<Game> gameList = Controller.makeRequestForCriteria2(serverIpAddress, serverPort);
                 if (gameList != null)
                     displayGameList(gameList);
                 else
-                    System.out.println("Aucun joueur avec ce username n'a été trouvé");
+                    System.out.println("\u001B[31m Aucun joueur avec ce username n'a été trouvé" + "\033[0m");
             }
             else if (choice == Request.VIEW_THE_5_MOST_PLAYED_OPENING) {
                 ArrayList<String> openingList = Controller.makeRequestForCriteria3(serverIpAddress, serverPort);
@@ -36,7 +46,7 @@ public class Main {
                 if(gameList != null)
                     displayGameList(gameList);
                 else
-                    System.out.println("There was an issue");
+                    System.out.println("Les parties d'échec n'ont pas été trouvées");
             }
             else if(choice == Request.VIEW_THE_MOST_ACTIVE_PLAYERS) {
                 ArrayList<String> playerList = Controller.makeRequestForCriteria5(serverIpAddress, serverPort);
@@ -47,10 +57,16 @@ public class Main {
                 ArrayList<Player> playerList = Controller.makeRequestForCiteria6(serverIpAddress, serverPort);
                 displayPlayers(playerList);
             }
+
+            displayMenu();
+            System.out.print(">");
+            choice = scanner.nextInt();
         }
+        //scanner.close();
     }
 
     static void displayMenu() {
+        System.out.print("\033[0;33m");
         System.out.println("---------------------------------------Menu---------------------------------------");
         System.out.println("1- Visualiser une partie spécifique pas à pas");
         System.out.println("2- Trouver toutes les parties d'un joueur");
@@ -60,13 +76,17 @@ public class Main {
         System.out.println("6- Voir le joueur le plus fort selon l'algorithme PAGE RANK");
         System.out.println("7- Voir le joueur le plus fort selon l'algorithme HITS");
         System.out.println("8- Voir le plus grand nombre de coups consécutifs cc qui soient communs à p parties");
+        System.out.println("0- Quitter");
+        System.out.print("\033[0m");
     }
 
 
     static void displayGameList(ArrayList<Game> gameList) {
         for(Game game : gameList) {
+            System.out.println("\033[0;36m");
             System.out.println(game);
             System.out.println("-----------------------------------------------------------------------");
+            System.out.print("\033[0m");
         }
     }
 

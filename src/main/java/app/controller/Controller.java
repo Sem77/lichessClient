@@ -3,6 +3,7 @@ package app.controller;
 import app.model.Game;
 import app.model.Player;
 import app.model.Request;
+import app.model.Strokes;
 import client.Constants;
 
 import java.io.*;
@@ -12,6 +13,44 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Controller {
+
+    public static Strokes makeRequestForCriteia1(String serverIpAddress, int serverPort) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Veuillez saisir le lien de la partie d'échec");
+        System.out.print("> ");
+        String link = scanner.nextLine().trim(); // remove spaces around
+
+        try {
+            // opening the connection
+            Socket connexionSocket = new Socket(serverIpAddress, serverPort);
+            ObjectOutputStream outStream = new ObjectOutputStream(connexionSocket.getOutputStream());
+            ObjectInputStream inStream = new ObjectInputStream(connexionSocket.getInputStream());
+
+            // sending request
+            ArrayList<String> criterias = new ArrayList<>();
+            criterias.add(link);
+            Request request = new Request(Request.VIEW_A_GAME, criterias);
+            outStream.writeObject(request);
+
+            // getting the answer from the server
+            Strokes strokes = (Strokes) inStream.readObject();
+
+            scanner.close();
+            // closing the connection
+            outStream.close();
+            inStream.close();
+            connexionSocket.close();
+
+            return strokes;
+        } catch (UnknownHostException uhe) {
+            System.out.println("Could not establish a connection with server. Let's try again");
+        } catch (IOException ioe) {
+            System.out.println("Could not establish a connection with server. Let's try again");
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        }
+        return null;
+    }
 
     /**
      * Establish a connection with the server
@@ -41,6 +80,7 @@ public class Controller {
             // getting the answer from the server
             ArrayList<Game> gameList = (ArrayList<Game>) inStream.readObject();
 
+            scanner.close();
             // closing the connection
             outStream.close();
             inStream.close();
@@ -178,6 +218,8 @@ public class Controller {
             cnfe.printStackTrace();
         }
 
+        scanner.close();
+
         return null;
     }
 
@@ -217,6 +259,7 @@ public class Controller {
         } catch (ClassNotFoundException cnfe) {
             cnfe.printStackTrace();
         }
+        scanner.close();
         return null;
     }
 }
