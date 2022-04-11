@@ -14,9 +14,9 @@ import java.util.Scanner;
 
 public class Controller {
 
-    public static Strokes makeRequestForCriteia1(String serverIpAddress, int serverPort) {
+    public static Game makeRequestForCriteia1(String serverIpAddress, int serverPort) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Veuillez saisir le lien de la partie d'échec");
+        System.out.println("Veuillez saisir l' URL de la partie d'échec");
         System.out.print("> ");
         String link = scanner.nextLine().trim(); // remove spaces around
 
@@ -33,7 +33,7 @@ public class Controller {
             outStream.writeObject(request);
 
             // getting the answer from the server
-            Strokes strokes = (Strokes) inStream.readObject();
+            Game game = (Game) inStream.readObject();
 
             scanner.close();
             // closing the connection
@@ -41,7 +41,7 @@ public class Controller {
             inStream.close();
             connexionSocket.close();
 
-            return strokes;
+            return game;
         } catch (UnknownHostException uhe) {
             System.out.println("Could not establish a connection with server. Let's try again");
         } catch (IOException ioe) {
@@ -59,7 +59,7 @@ public class Controller {
      * Close the connection
      * @return list of the games
      */
-    public static ArrayList<Game> makeRequestForCriteria2(String serverIpAddress, int serverPort) {
+    public static ArrayList<String> makeRequestForCriteria2(String serverIpAddress, int serverPort) {
         try {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Veuillez saisir le nom du joueur");
@@ -78,7 +78,7 @@ public class Controller {
             outStream.writeObject(request);
 
             // getting the answer from the server
-            ArrayList<Game> gameList = (ArrayList<Game>) inStream.readObject();
+            ArrayList<String> gameList = (ArrayList<String>) inStream.readObject();
 
             scanner.close();
             // closing the connection
@@ -145,7 +145,12 @@ public class Controller {
      * @param serverPort
      * @return
      */
-    public static ArrayList<Game> makeRequestForCriteria4(String serverIpAddress, int serverPort) {
+    public static ArrayList<String> makeRequestForCriteria4(String serverIpAddress, int serverPort) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Combien de parties d'échec?");
+        String nbShortestGames = scanner.nextLine();
+
         try {
             // opening the connection
             Socket connexionSocket = new Socket(serverIpAddress, serverPort);
@@ -153,10 +158,12 @@ public class Controller {
             ObjectInputStream inStream = new ObjectInputStream(connexionSocket.getInputStream());
 
             // sending request
-            Request request = new Request(Request.VIEW_THE_SHORTEST_GAMES);
+            ArrayList<String> criterias = new ArrayList<>();
+            criterias.add(nbShortestGames);
+            Request request = new Request(Request.VIEW_THE_SHORTEST_GAMES, criterias);
             outStream.writeObject(request);
 
-            ArrayList<Game> gameList = (ArrayList<Game>) inStream.readObject();
+            ArrayList<String> gameList = (ArrayList<String>) inStream.readObject();
 
             // closing the connection
             outStream.close();

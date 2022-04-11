@@ -22,18 +22,18 @@ public class Main {
         while(choice != 0) {
 
             if(choice == Request.VIEW_A_GAME) {
-                Strokes strokes = Controller.makeRequestForCriteia1(serverIpAddress, serverPort);
-                if(strokes != null) {
-                    strokes.showSteps();
+                Game game = Controller.makeRequestForCriteia1(serverIpAddress, serverPort);
+                if(game != null) {
+                    System.out.println(game);
                 }
                 else {
                     System.out.println("Aucune partie avec ce lien c'a été trouvée");
                 }
             }
             else if(choice == Request.VIEW_A_PLAYER_S_GAMES) {
-                ArrayList<Game> gameList = Controller.makeRequestForCriteria2(serverIpAddress, serverPort);
+                ArrayList<String> gameList = Controller.makeRequestForCriteria2(serverIpAddress, serverPort);
                 if (gameList != null)
-                    displayGameList(gameList);
+                    displayStrings(gameList);
                 else
                     System.out.println("\u001B[31m Aucun joueur avec ce username n'a été trouvé" + "\033[0m");
             }
@@ -42,9 +42,9 @@ public class Main {
                 displayStrings(openingList);
             }
             else if(choice == Request.VIEW_THE_SHORTEST_GAMES) {
-                ArrayList<Game> gameList = Controller.makeRequestForCriteria4(serverIpAddress, serverPort);
+                ArrayList<String> gameList = Controller.makeRequestForCriteria4(serverIpAddress, serverPort);
                 if(gameList != null)
-                    displayGameList(gameList);
+                    displayStrings(gameList);
                 else
                     System.out.println("Les parties d'échec n'ont pas été trouvées");
             }
