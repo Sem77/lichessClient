@@ -4,7 +4,6 @@ import app.model.Game;
 import app.model.Player;
 import app.model.Request;
 import app.model.Strokes;
-import client.Constants;
 
 import java.io.*;
 import java.net.Socket;
@@ -246,7 +245,47 @@ public class Controller {
             // sending request
             ArrayList<String> criterias = new ArrayList<>();
             criterias.add(nbPlayers);
-            Request request = new Request(Request.VIEW_THE_BEST_PLAYERS, criterias);
+            Request request = new Request(Request.VIEW_THE_BEST_PLAYERS_PR, criterias);
+            outStream.writeObject(request);
+
+            // getting the answer from the server
+            ArrayList<Player> playerList = (ArrayList<Player>) inStream.readObject();
+
+            // closing the connection
+            outStream.close();
+            inStream.close();
+            connexionSocket.close();
+
+            return playerList;
+
+        } catch (UnknownHostException uhe) {
+            System.out.println("Could not establish a connection with server. Let's try again");
+        } catch (IOException ioe) {
+            System.out.println("Could not establish a connection with server. Let's try again");
+        } catch (ClassNotFoundException cnfe) {
+            cnfe.printStackTrace();
+        }
+        scanner.close();
+        return null;
+    }
+
+
+    public static ArrayList<Player> makeRequestForCiteria7(String serverIpAddress, int serverPort) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Combien de joueurs?");
+        String nbPlayers = scanner.nextLine();
+
+        try {
+            // opening the connection
+            Socket connexionSocket = new Socket(serverIpAddress, serverPort);
+            ObjectOutputStream outStream = new ObjectOutputStream(connexionSocket.getOutputStream());
+            ObjectInputStream inStream = new ObjectInputStream(connexionSocket.getInputStream());
+
+            // sending request
+            ArrayList<String> criterias = new ArrayList<>();
+            criterias.add(nbPlayers);
+            Request request = new Request(Request.VIEW_THE_BEST_PLAYERS_HITS, criterias);
             outStream.writeObject(request);
 
             // getting the answer from the server

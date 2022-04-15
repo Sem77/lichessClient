@@ -3,6 +3,7 @@ import app.model.Game;
 import app.model.Player;
 import app.model.Request;
 import app.model.Strokes;
+import java.util.NoSuchElementException;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -21,42 +22,41 @@ public class Main {
 
         while(choice != 0) {
 
-            if(choice == Request.VIEW_A_GAME) {
-                Game game = Controller.makeRequestForCriteia1(serverIpAddress, serverPort);
-                if(game != null) {
-                    System.out.println(game);
+            try {
+                if (choice == Request.VIEW_A_GAME) {
+                    Game game = Controller.makeRequestForCriteia1(serverIpAddress, serverPort);
+                    if (game != null) {
+                        System.out.println(game);
+                    } else {
+                        System.out.println("Aucune partie avec ce lien c'a été trouvée");
+                    }
+                } else if (choice == Request.VIEW_A_PLAYER_S_GAMES) {
+                    ArrayList<String> gameList = Controller.makeRequestForCriteria2(serverIpAddress, serverPort);
+                    if (gameList != null)
+                        displayStrings(gameList);
+                    else
+                        System.out.println("\u001B[31m Aucun joueur avec ce username n'a été trouvé" + "\033[0m");
+                } else if (choice == Request.VIEW_THE_5_MOST_PLAYED_OPENING) {
+                    ArrayList<String> openingList = Controller.makeRequestForCriteria3(serverIpAddress, serverPort);
+                    displayStrings(openingList);
+                } else if (choice == Request.VIEW_THE_SHORTEST_GAMES) {
+                    ArrayList<String> gameList = Controller.makeRequestForCriteria4(serverIpAddress, serverPort);
+                    if (gameList != null)
+                        displayStrings(gameList);
+                    else
+                        System.out.println("Les parties d'échec n'ont pas été trouvées");
+                } else if (choice == Request.VIEW_THE_MOST_ACTIVE_PLAYERS) {
+                    ArrayList<String> playerList = Controller.makeRequestForCriteria5(serverIpAddress, serverPort);
+                    displayStrings(playerList);
+                    System.out.println(playerList.size());
+                } else if (choice == Request.VIEW_THE_BEST_PLAYERS_PR) {
+                    ArrayList<Player> playerList = Controller.makeRequestForCiteria6(serverIpAddress, serverPort);
+                    displayPlayers(playerList);
+                } else if (choice == Request.VIEW_THE_BEST_PLAYERS_HITS) {
+                    ArrayList<Player> playerList = Controller.makeRequestForCiteria7(serverIpAddress, serverPort);
+                    displayPlayers(playerList);
                 }
-                else {
-                    System.out.println("Aucune partie avec ce lien c'a été trouvée");
-                }
-            }
-            else if(choice == Request.VIEW_A_PLAYER_S_GAMES) {
-                ArrayList<String> gameList = Controller.makeRequestForCriteria2(serverIpAddress, serverPort);
-                if (gameList != null)
-                    displayStrings(gameList);
-                else
-                    System.out.println("\u001B[31m Aucun joueur avec ce username n'a été trouvé" + "\033[0m");
-            }
-            else if (choice == Request.VIEW_THE_5_MOST_PLAYED_OPENING) {
-                ArrayList<String> openingList = Controller.makeRequestForCriteria3(serverIpAddress, serverPort);
-                displayStrings(openingList);
-            }
-            else if(choice == Request.VIEW_THE_SHORTEST_GAMES) {
-                ArrayList<String> gameList = Controller.makeRequestForCriteria4(serverIpAddress, serverPort);
-                if(gameList != null)
-                    displayStrings(gameList);
-                else
-                    System.out.println("Les parties d'échec n'ont pas été trouvées");
-            }
-            else if(choice == Request.VIEW_THE_MOST_ACTIVE_PLAYERS) {
-                ArrayList<String> playerList = Controller.makeRequestForCriteria5(serverIpAddress, serverPort);
-                displayStrings(playerList);
-                System.out.println(playerList.size());
-            }
-            else if(choice == Request.VIEW_THE_BEST_PLAYERS) {
-                ArrayList<Player> playerList = Controller.makeRequestForCiteria6(serverIpAddress, serverPort);
-                displayPlayers(playerList);
-            }
+            } catch(NoSuchElementException nsee) {}
 
             displayMenu();
             System.out.print(">");
@@ -75,7 +75,7 @@ public class Main {
         System.out.println("5- Lister les joueurs les plus actifs");
         System.out.println("6- Voir le joueur le plus fort selon l'algorithme PAGE RANK");
         System.out.println("7- Voir le joueur le plus fort selon l'algorithme HITS");
-        System.out.println("8- Voir le plus grand nombre de coups consécutifs cc qui soient communs à p parties");
+        //System.out.println("8- Voir le plus grand nombre de coups consécutifs cc qui soient communs à p parties");
         System.out.println("0- Quitter");
         System.out.print("\033[0m");
     }
@@ -102,8 +102,7 @@ public class Main {
         int rank = 1;
         for(Player player : playerList) {
             System.out.println("Rang: " + rank);
-            System.out.println("Nom d'utilisateur: " + player.getUsername());
-            System.out.println("Page rank: " + player.getPageRank());
+            System.out.println(player);
             System.out.println("-------------------------------------------");
             rank++;
         }
